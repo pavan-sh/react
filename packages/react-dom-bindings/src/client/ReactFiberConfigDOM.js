@@ -2590,9 +2590,10 @@ export function startGestureTransition(
             // $FlowFixMe[prop-missing]
             typeof timing.duration === 'number' ? timing.duration : 0;
           // TODO: Consider interation count higher than 1.
+          // Some browsers may not implement all optional timing fields.
           // $FlowFixMe[prop-missing]
-          // $FlowFixMe[unsafe-addition]
-          const durationWithDelay = timing.delay + duration;
+          const delay = typeof timing.delay === 'number' ? timing.delay : 0;
+          const durationWithDelay = delay + duration;
           if (durationWithDelay > longestDuration) {
             longestDuration = durationWithDelay;
           }
@@ -2605,7 +2606,7 @@ export function startGestureTransition(
           }
         }
       }
-      const durationToRangeMultipler =
+      const durationToRangeMultiplier =
         (rangeEnd - rangeStart) / longestDuration;
       for (let i = 0; i < animations.length; i++) {
         const anim = animations[i];
@@ -2653,15 +2654,13 @@ export function startGestureTransition(
           const duration =
             // $FlowFixMe[prop-missing]
             typeof timing.duration === 'number' ? timing.duration : 0;
+          // Some browsers may not implement all optional timing fields.
+          // $FlowFixMe[prop-missing]
+          const delay = typeof timing.delay === 'number' ? timing.delay : 0;
           let adjustedRangeStart =
             // $FlowFixMe[unsafe-addition]
-            // $FlowFixMe[prop-missing]
-            rangeEnd - (duration + timing.delay) * durationToRangeMultipler;
-          let adjustedRangeEnd =
-            rangeEnd -
-            // $FlowFixMe[prop-missing]
-            // $FlowFixMe[unsafe-arithmetic]
-            timing.delay * durationToRangeMultipler;
+            rangeEnd - (duration + delay) * durationToRangeMultiplier;
+          let adjustedRangeEnd = rangeEnd - delay * durationToRangeMultiplier;
           if (
             timing.direction === 'reverse' ||
             timing.direction === 'alternate-reverse'
